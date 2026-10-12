@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#101714" />
+    <title>Pepe Bros. ASCII Odyssey — A pond-sized adventure</title>
+    <meta
+      name="description"
+      content="One frog. Eight levels. A whole kingdom of characters. Run, jump and rescue the Golden Lily in a free, seed-powered ASCII platformer."
+    />
+    <meta property="og:title" content="Pepe Bros. ASCII Odyssey" />
+    <meta
+      property="og:description"
+      content="A small frog. A big adventure. Explore eight seeded ASCII levels and bring the Golden Lily home."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="./cover.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <script defer src="./assets/index-Dl8uoY_j.js"></script>
+    <link rel="stylesheet" href="./assets/style-bt3Yo4UV.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#game">Skip to game</a>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="arcade-mark" href="#" aria-label="Pepe2Pepe arcade game title"
+          ><span class="mark-glyph" aria-hidden="true">@</span
+          ><span>pepe2pepe<span class="arcade-word"> / arcade</span></span></a
+        >
+        <span class="header-note">A little frog. A big adventure.</span>
+        <span class="edition">ASCII / 001</span>
+      </header>
+      <main id="game">
+        <h1 id="run-title" class="sr-only" hidden>Pepe Bros. ASCII Odyssey</h1>
+        <section class="cabinet" aria-label="Pepe Bros. ASCII Odyssey game">
+          <div class="hud" aria-label="Run information">
+            <div class="stat">
+              <span>Score</span><strong id="score">000000</strong>
+            </div>
+            <div class="stat">
+              <span>Lives</span
+              ><strong id="lives" class="mint" aria-label="3 lives"
+                >@ @ @</strong
+              >
+            </div>
+            <div class="stat world-stat">
+              <span id="world-label">Swamp</span
+              ><strong id="world">01—01</strong>
+            </div>
+            <div class="stat time-stat">
+              <span>Time</span><strong id="time">150</strong>
+            </div>
+            <div class="stat seed-stat">
+              <span>Seed <span id="best-label"></span></span
+              ><button
+                type="button"
+                id="seed-display"
+                title="View and copy the run seed"
+              >
+                New adventure
+              </button>
+            </div>
+            <div class="hud-actions">
+              <button
+                type="button"
+                class="small-button"
+                id="mute"
+                aria-pressed="false"
+                aria-label="Mute audio"
+              >
+                <span aria-hidden="true">♪</span
+                ><span class="button-word"> Sound</span>
+              </button>
+              <button
+                type="button"
+                class="small-button"
+                id="crt"
+                aria-pressed="true"
+                aria-label="CRT scanlines"
+              >
+                CRT<span class="setting-dot" aria-hidden="true"></span>
+              </button>
+              <button
+                type="button"
+                class="small-button"
+                id="pause"
+                aria-label="Pause game"
+                hidden
+              >
+                Ⅱ
+              </button>
+            </div>
+          </div>
+          <div class="stage has-scanlines" id="stage">
+            <canvas
+              id="canvas"
+              tabindex="0"
+              role="img"
+              aria-label="ASCII platformer. Use A and D or arrow keys to move, Space to jump, Shift to run, J to fire. P pauses."
+              aria-describedby="game-summary"
+              >Your browser needs Canvas support to play Pepe Bros. ASCII
+              Odyssey.</canvas
+            >
+            <div class="scanlines" aria-hidden="true"></div>
+            <div id="panel" class="game-panel title-panel">
+              <div class="title-content">
+                <h1>Pepe<br />Bros<span class="title-dot">.</span></h1>
+                <p class="game-subtitle">
+                  ASCII Odyssey<span class="cursor" aria-hidden="true">_</span>
+                </p>
+                <p class="premise">
+                  One frog. Eight levels.<br />Bring the Golden Lily home.
+                </p>
+                <div class="title-actions">
+                  <button type="button" class="primary" data-action="new">
+                    <span aria-hidden="true">&gt;</span> New run</button
+                  ><button type="button" data-action="seed">
+                    <span aria-hidden="true">#</span> Enter seed
+                  </button>
+                </div>
+                <p class="run-note">Random seed · 3 lives · ~10 min</p>
+              </div>
+              <div class="scene-caption" aria-hidden="true">
+                <span>@</span> small frog, great expectations.
+              </div>
+            </div>
+            <div id="power-status" class="power-status" hidden></div>
+            <div id="death-note" class="death-note" hidden></div>
+          </div>
+          <div
+            class="world-route"
+            aria-label="Your journey through four worlds"
+          >
+            <div class="route-stop current" data-world="0">
+              <span class="route-number">01</span><span>Swamp</span
+              ><span class="route-art" aria-hidden="true">/\ /\</span>
+            </div>
+            <span class="route-link" aria-hidden="true">···</span>
+            <div class="route-stop" data-world="1">
+              <span class="route-number">02</span><span>Caves</span
+              ><span class="route-art" aria-hidden="true">VVV</span>
+            </div>
+            <span class="route-link" aria-hidden="true">···</span>
+            <div class="route-stop" data-world="2">
+              <span class="route-number">03</span><span>Sky Pads</span
+              ><span class="route-art" aria-hidden="true">(~~)</span>
+            </div>
+            <span class="route-link" aria-hidden="true">···</span>
+            <div class="route-stop" data-world="3">
+              <span class="route-number">04</span><span>Bog Castle</span
+              ><span class="route-art" aria-hidden="true">|^|</span>
+            </div>
+          </div>
+          <div class="touch-controls" aria-label="Touch game controls">
+            <div class="direction-controls">
+              <button type="button" data-control="left" aria-label="Move left">
+                ←</button
+              ><button
+                type="button"
+                data-control="right"
+                aria-label="Move right"
+              >
+                →
+              </button>
+            </div>
+            <button
+              type="button"
+              data-control="down"
+              id="pipe-button"
+              class="pipe-button"
+              aria-label="Enter secret pipe"
+              hidden
+            >
+              ↓<span>Pipe</span>
+            </button>
+            <div class="action-controls">
+              <button
+                type="button"
+                data-control="fire"
+                id="fire-button"
+                aria-label="Fire a fireball"
+              >
+                X<span>Fire</span></button
+              ><button
+                type="button"
+                data-control="jump"
+                class="jump-button"
+                aria-label="Jump; hold to jump higher"
+              >
+                ↑<span>Jump</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <div class="below-game">
+          <div class="keyboard-guide" aria-label="Quick keyboard controls">
+            <span><kbd>A</kbd><kbd>D</kbd> move</span
+            ><span><kbd>Space</kbd> jump</span><span><kbd>Shift</kbd> run</span
+            ><span><kbd>J</kbd> fire</span><span><kbd>P</kbd> pause</span>
+          </div>
+          <p class="rotate-hint">↻ More room to hop in landscape.</p>
+          <button type="button" class="help-button" id="help">
+            How to play <span aria-hidden="true">?</span>
+          </button>
+        </div>
+        <p id="game-summary" class="sr-only">
+          Rescue the Golden Lily across eight seeded levels. Collect yellow
+          flies, jump on red beetles, avoid spiky snails and water, and beat
+          each world's guardian to reach the flag. You have three lives.
+        </p>
+        <div
+          id="announcement"
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        ></div>
+      </main>
+      <footer class="site-footer">
+        <span>Made of characters. Full of character.</span
+        ><span id="storage-note">Your best, saved per seed.</span>
+      </footer>
+    </div>
+    <dialog id="seed-dialog" class="sheet">
+      <form id="seed-form" novalidate>
+        <div class="sheet-heading">
+          <h2>Same seed. Same adventure.</h2>
+          <button
+            type="button"
+            class="close"
+            data-close
+            aria-label="Close seed entry"
+          >
+            ×
+          </button>
+        </div>
+        <p>Share a favourite pond, or explore someone else’s.</p>
+        <label for="seed-input">Run seed</label>
+        <input
+          id="seed-input"
+          name="seed"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="20"
+          placeholder="e.g. POND-1985"
+          aria-describedby="seed-hint seed-error"
+        />
+        <p class="field-hint" id="seed-hint">
+          1–20 letters, numbers or hyphens.
+        </p>
+        <p id="seed-error" class="field-error" role="alert"></p>
+        <p id="seed-best" class="seed-best"></p>
+        <button type="submit" class="primary">
+          Play this seed <span aria-hidden="true">→</span>
+        </button>
+      </form>
+    </dialog>
+    <dialog id="share-dialog" class="sheet">
+      <div class="sheet-heading">
+        <h2>A pond worth sharing.</h2>
+        <button
+          type="button"
+          class="close"
+          data-close
+          aria-label="Close run seed"
+        >
+          ×
+        </button>
+      </div>
+      <p>Enter this seed on the title screen to play the same eight levels.</p>
+      <label for="share-input">Current run seed</label
+      ><input id="share-input" readonly />
+      <button type="button" class="primary" id="copy-seed">Copy seed</button>
+      <p id="copy-status" role="status"></p>
+    </dialog>
+    <dialog id="help-dialog" class="sheet help-sheet">
+      <div class="sheet-heading">
+        <h2>A field guide to the pond.</h2>
+        <button
+          type="button"
+          class="close"
+          data-close
+          aria-label="Close how to play"
+        >
+          ×
+        </button>
+      </div>
+      <p>
+        Rescue the Golden Lily from the Bog King. Reach the flag in all eight
+        levels; a guardian waits at the end of each world.
+      </p>
+      <div class="guide-grid">
+        <section>
+          <h3>Make your move</h3>
+          <dl class="controls-list">
+            <div>
+              <dt>A / D or ← / →</dt>
+              <dd>Move</dd>
+            </div>
+            <div>
+              <dt>Space / W / ↑</dt>
+              <dd>Jump · hold for height</dd>
+            </div>
+            <div>
+              <dt>Shift</dt>
+              <dd>Run</dd>
+            </div>
+            <div>
+              <dt>J / X</dt>
+              <dd>Fire · needs Fire Fly</dd>
+            </div>
+            <div>
+              <dt>S / ↓</dt>
+              <dd>Enter a nearby pipe</dd>
+            </div>
+            <div>
+              <dt>P / Esc</dt>
+              <dd>Pause / resume</dd>
+            </div>
+          </dl>
+          <p class="field-hint">
+            On touch, hold the arrows to run. Hold Jump for height. The Pipe
+            button appears near a secret.
+          </p>
+        </section>
+        <section>
+          <h3>Read the characters</h3>
+          <dl class="legend">
+            <div>
+              <dt class="mint">@</dt>
+              <dd>That’s you. Three lives.</dd>
+            </div>
+            <div>
+              <dt class="gold">*</dt>
+              <dd>Fly · 10 points</dd>
+            </div>
+            <div>
+              <dt class="gold">[?]</dt>
+              <dd>Headbutt for a power-up</dd>
+            </div>
+            <div>
+              <dt class="brick">[#]</dt>
+              <dd>Headbutt to break</dd>
+            </div>
+            <div>
+              <dt class="danger">ö</dt>
+              <dd>Beetle · stomp for +100</dd>
+            </div>
+            <div>
+              <dt class="danger">§</dt>
+              <dd>Spiky snail · jump over</dd>
+            </div>
+            <div>
+              <dt class="water">~</dt>
+              <dd>Water · a life lost</dd>
+            </div>
+            <div>
+              <dt class="mint">||</dt>
+              <dd>Secret bonus cave</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+      <div class="power-guide">
+        <p>
+          <b class="tea">T</b
+          ><span><strong>Mushroom Tea</strong>Grow big. Survive one hit.</span>
+        </p>
+        <p>
+          <b class="gold">&amp;</b
+          ><span><strong>Fire Fly</strong>Spit bouncing fireballs.</span>
+        </p>
+        <p>
+          <b class="lilac">*</b
+          ><span><strong>Lily Star</strong>Invincible for 9 seconds.</span>
+        </p>
+      </div>
+      <p>
+        Watch a guardian’s <span class="gold">!</span> warning, dodge its shot,
+        then stomp its head. Fireballs work too. Grab flags high for more
+        points; time left adds a bonus. Reed markers save your position after a
+        fall.
+      </p>
+      <p class="field-hint">
+        Best scores and sound settings are saved when the browser allows it.
+        When saving is unavailable, they last for this session.
+      </p>
+      <button type="button" class="primary" data-close>
+        Got it. Let’s hop.
+      </button>
+    </dialog>
+    <dialog id="restart-dialog" class="sheet">
+      <div class="sheet-heading">
+        <h2>Restart this run?</h2>
+        <button
+          type="button"
+          class="close"
+          data-close
+          aria-label="Cancel restart"
+        >
+          ×
+        </button>
+      </div>
+      <p>
+        Start this seed from level one with three lives. Your current run will
+        end.
+      </p>
+      <div class="dialog-actions">
+        <button type="button" class="primary" id="confirm-restart">
+          Restart run</button
+        ><button type="button" data-close>Cancel</button>
+      </div>
+    </dialog>
+    <noscript
+      ><p class="noscript">
+        Enable JavaScript to play this browser game.
+      </p></noscript
+    >
+  </body>
+</html>

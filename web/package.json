@@ -1,0 +1,22 @@
+{
+  "name": "pepe-bros-ascii-odyssey",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --experimental-strip-types --test ../tests/engine.test.ts",
+    "test:browser": "node ../scripts/browser-test.mjs",
+    "test:campaign": "node ../scripts/browser-playthrough.mjs",
+    "check:export": "node ../scripts/check-export.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "7.3.1",
+    "playwright": "1.58.2",
+    "@axe-core/playwright": "4.11.1"
+  }
+}

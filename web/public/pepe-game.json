@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "pepe-browser-game/1",
+  "title": "Pepe Bros. ASCII Odyssey",
+  "version": "1.0.0",
+  "summary": "One frog. Eight seeded ASCII levels. Bring the Golden Lily home.",
+  "description": "Run and jump through the Swamp, Caves, Sky Pads and Bog Castle in an original character-art platformer. Collect flies, break bricks, discover bonus caves and use Mushroom Tea, Fire Fly and Lily Star to defeat four guardians. Three lives, shareable seeds and a best score for each seed. Includes original chiptunes, touch controls, a pause menu, adjustable CRT scanlines and reduced-motion support.",
+  "controls": "Move: A/D or Left/Right. Jump: Space/W/Up (hold for height). Run: Shift. Fire: J/X after Fire Fly. Pipe: S/Down near ||. Pause/resume: P/Esc. Touch: hold arrows to run, hold Jump for height, tap Fire; Pipe appears near secrets. Use New run or Enter seed to begin.",
+  "genre": "action",
+  "players": 1,
+  "mobile": true,
+  "entry": "index.html",
+  "cover": "cover.svg"
+}

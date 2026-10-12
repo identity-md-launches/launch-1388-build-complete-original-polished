@@ -1,0 +1,11 @@
+Pepe Bros. ASCII Odyssey — 1.0.0
+
+Original game code, level generation, ASCII artwork, cover, music and sound-effect sequences created for this assignment.
+
+Space Mono regular and bold, SIL Open Font License 1.1.
+See licenses/Space-Mono-OFL.txt.
+
+Silkscreen regular, SIL Open Font License 1.1.
+See licenses/Silkscreen-OFL.txt.
+
+No third-party image or sound recordings are used.
