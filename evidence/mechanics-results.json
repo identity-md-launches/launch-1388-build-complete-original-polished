@@ -1,0 +1,19 @@
+{
+  "checks": [
+    "Sub-frame jump press is retained until the next physics update.",
+    "Sub-frame X press emits a fireball.",
+    "Touch Fire tap emits a fireball.",
+    "S/Down enters the pipe; keyboard traversal reaches the bonus exit and restores the main level.",
+    "All four guardian portraits rendered at their real arenas.",
+    "A 20-character seed stays visible at 390px."
+  ],
+  "screenshots": [
+    "evidence/bonus-cave.png",
+    "evidence/boss-1.png",
+    "evidence/boss-2.png",
+    "evidence/boss-3.png",
+    "evidence/boss-4.png"
+  ],
+  "method": "Production bundle exposed only in the intercepted test response. Fixed state setup for power-ups, secret pipe and boss portraits; inputs and collisions use the real game loop.",
+  "status": "passed"
+}

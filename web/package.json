@@ -11,6 +11,7 @@
     "test": "node --experimental-strip-types --test ../tests/engine.test.ts",
     "test:browser": "node ../scripts/browser-test.mjs",
     "test:campaign": "node ../scripts/browser-playthrough.mjs",
+    "check:rebuild": "node ../scripts/check-rebuild.mjs",
     "check:export": "node ../scripts/check-export.mjs"
   },
   "devDependencies": {

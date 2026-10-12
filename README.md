@@ -54,10 +54,11 @@ npx playwright install chromium
 npm run test:browser
 npm run test:campaign
 node ../scripts/browser-mechanics.mjs
+npm run check:rebuild
 npm run check:export
 ```
 
-Each browser script starts and closes its own foreground HTTP preview and browser. Tests serve the **production `dist/`** at `/arcade/odyssey/`, including an exact `allow-scripts allow-pointer-lock` iframe without CORS headers. No preview service is left running.
+Each script writes its results, logs and screenshots to the repository-root `evidence/` directory. Each browser script starts and closes its own foreground HTTP preview and browser. Tests serve the **production `dist/`** at `/arcade/odyssey/`, including an exact `allow-scripts allow-pointer-lock` iframe without CORS headers. No preview service is left running.
 
 The campaign controller observes the engine and sends ordinary keyboard events. Its clock is accelerated; it never teleports the player, edits health, skips stages or calls physics updates directly. Separate mechanics tests intentionally use state fixtures for collisions, game over and rare states. To observe internals, those tests add a reference only to the intercepted browser response. **No test globals, cheats or automation code ship in `dist/`.**
 
@@ -65,13 +66,18 @@ For tools installed outside the repository, set `PEPE_TEST_TOOLS` to the install
 
 ## Actual validation
 
-- Production build and strict TypeScript check passed.
-- **23 engine tests** passed, including 200 seeds × 8 levels, collision/power-up/life/pause/score mechanics and a complete input-only campaign. See [engine-tests.tap](artifacts/engine-tests.tap).
-- Chromium browser interactions and the storage-denied iframe bridge passed. See [browser-results.json](artifacts/browser-results.json).
-- All eight stages and four guardians were completed through keyboard events, followed by replay. See [playthrough-results.json](artifacts/playthrough-results.json) and [victory screenshot](artifacts/campaign-victory.png).
-- A fresh external checkout of the source installed from the lockfile using an existing offline npm cache, typechecked and rebuilt to byte-identical export files. See [rebuild-results.json](artifacts/rebuild-results.json).
-- All six Better Interface domains were reviewed. Findings, corrections, screenshots and honest coverage limits are in [artifacts/validation.md](artifacts/validation.md).
-- The final manifest, local assets and submission size are checked by [scripts/check-export.mjs](scripts/check-export.mjs); results and export hashes are in [export-check.json](artifacts/export-check.json).
+All evidence is committed in [`evidence/`](evidence/). (The workspace's Git exclude file hides any `artifacts/` directory, so the first round's logs were never committed; the scripts now write here.) Results below are from the final export in this tree.
+
+- Production build and strict TypeScript check passed (`npm run build`, `npm run typecheck`).
+- **23 engine tests** passed, including 200 seeds × 8 levels, collision/power-up/life/pause/score mechanics and a complete input-only campaign. See [engine-tests.tap](evidence/engine-tests.tap).
+- **17 Chromium interaction checks** passed with no console, page or resource errors: keyboard loop, dialogs, Axe scans, contrast, responsive title, 200% text, audio gesture, pause/restart, game over and replay, fire, reduced motion, touch and landscape, short-portrait HUD and result panels, tablet touch layouts, host pause outranking an open dialog, the storage-denied sandboxed iframe bridge, manifest and cover. See [browser-results.json](evidence/browser-results.json) and the screenshots it lists.
+- All eight stages and four guardians were completed through keyboard events only, followed by one-click replay. See [playthrough-results.json](evidence/playthrough-results.json) and the [victory screenshot](evidence/campaign-victory.png).
+- Six mechanics checks passed (sub-frame presses, touch fire, secret pipe traversal, four guardian portraits, 20-character seed at 390px). See [mechanics-results.json](evidence/mechanics-results.json).
+- A fresh copy of `web/` outside the repository installed from the lockfile, typechecked and rebuilt to byte-identical export files (`npm run check:rebuild`). See [rebuild-results.json](evidence/rebuild-results.json).
+- All six Better Interface domains were reviewed. Coverage, `file:line` findings, fixes and honest limits are in [evidence/validation.md](evidence/validation.md).
+- The final manifest, local assets and submission size are checked by `npm run check:export`; results and export hashes are in [export-check.json](evidence/export-check.json).
+
+Revision changes after the reviewer's reports: a deliberate pause (key, button or arcade host) now cancels any pending resume-after-dialog; the portrait HUD keeps the Time countdown; touch play measures the stage height so HUD, scene and controls share one viewport on phones and tablets; short portrait result panels drop their art and scroll the focused primary action into view.
 
 These are worker-run checks, not independent certification. Chromium automation is not a physical-device test, a screen-reader session or an audible listening review. Safari, Firefox, native 200% browser zoom and real phone performance were not checked. Menus have semantic controls and keyboard support; the spatial platforming itself is visual. There is no cross-device cloud save or trusted leaderboard.
 
@@ -91,7 +97,7 @@ Vite uses `base: './'`. Production is a classic deferred IIFE script, with font 
 
 ## Publish and arcade integration
 
-Deliver the **entire `dist/` directory**, alongside source, lockfile and documentation. The IdentityMD Swarm publishes that export after this build is handed off; this build does not deploy or call the release helper. Do not upload `node_modules`, package-manager caches, browser downloads or `test/scratch`.
+Deliver the **entire `dist/` directory**, alongside source, lockfile, documentation and `evidence/`. The IdentityMD Swarm publishes that export after this build is handed off; this build does not deploy or call the release helper. Do not upload `node_modules`, package-manager caches, browser downloads or `test/scratch`.
 
 After Swarm returns the hosting result, the coordinating creator can use the [Pepe2Pepe template's release workflow](https://github.com/adaki2004/pepe2pepe-game-template/blob/main/INTEGRATION.md) outside this build. Admin review happens afterward. **No publication URL, submission receipt or approval is claimed here.**
 

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 process.chdir(fileURLToPath(new URL("..", import.meta.url)));
 import { preview, chromium } from "./browser-lib.mjs";
+await mkdir("evidence", { recursive: true });
 const host = await preview();
 const browser = await chromium.launch({
   headless: true,
@@ -120,7 +121,7 @@ try {
     if (Math.floor(s.index / 2) !== priorWorld && s.index > 0) {
       priorWorld = Math.floor(s.index / 2);
       await page.screenshot({
-        path: `artifacts/world-${priorWorld + 1}.png`,
+        path: `evidence/world-${priorWorld + 1}.png`,
         fullPage: true,
       });
     }
@@ -128,7 +129,7 @@ try {
       report.result = s;
       report.stages = s.stages;
       await page.screenshot({
-        path: `artifacts/campaign-${s.mode}.png`,
+        path: `evidence/campaign-${s.mode}.png`,
         fullPage: true,
       });
       break;
@@ -152,7 +153,7 @@ try {
   process.exitCode = 1;
 } finally {
   await writeFile(
-    "artifacts/playthrough-results.json",
+    "evidence/playthrough-results.json",
     JSON.stringify(report, null, 2) + "\n",
   );
   await browser.close();

@@ -1474,6 +1474,7 @@
     document.querySelectorAll("[data-control]").forEach((b) => b.classList.remove("held"));
   }
   function pause() {
+    resumeAfterDialog = false;
     clearInput();
     game.pause();
     sync();
@@ -1723,6 +1724,22 @@
     downPressed = false;
     return input;
   }
+  const stage = $("stage");
+  const touchControls = document.querySelector(".touch-controls");
+  let fitted = "";
+  function fitStage() {
+    const body = document.body.classList;
+    let value = "";
+    if (body.contains("in-run") && body.contains("touch-device")) {
+      const top = stage.getBoundingClientRect().top + scrollY;
+      const strip = touchControls.getBoundingClientRect().height;
+      value = `${Math.floor(innerHeight - top - strip - 1)}px`;
+    }
+    if (value === fitted) return;
+    fitted = value;
+    if (value) stage.style.setProperty("--fit-stage", value);
+    else stage.style.removeProperty("--fit-stage");
+  }
   function resultStats() {
     return `<div class="result-stats"><p><strong>${game.score.toLocaleString()}</strong>Score</p><p><strong>${game.totalFlies}</strong>Flies</p><p><strong>${Math.floor(game.elapsed / 60)}:${Math.floor(
       game.elapsed % 60
@@ -1762,9 +1779,13 @@
     |
  ~~(@)~~</pre><h2>The Lily is home.</h2><p class="subtitle">Eight levels. Four guardians. One very brave frog.</p>${resultStats()}<p class="subtitle">Seed ${game.seed} · Best ${best.toLocaleString()}</p><div class="center-actions"><button type="button" class="primary" data-action="new">A new odyssey →</button><button type="button" data-action="retry">Replay this seed</button></div><button type="button" class="subtle-action" data-action="title">Back to title</button></div>`;
       renderer.resize();
-      if (["paused", "clear", "gameover", "victory"].includes(mode))
-        panel.querySelector(".primary")?.focus({ preventScroll: true });
+      if (["paused", "clear", "gameover", "victory"].includes(mode)) {
+        const primary = panel.querySelector(".primary");
+        primary?.focus({ preventScroll: true });
+        primary?.scrollIntoView({ block: "nearest" });
+      }
     }
+    fitStage();
     $("score").textContent = (title ? 0 : game.score).toString().padStart(6, "0");
     $("lives").textContent = title ? "@ @ @" : Array.from({ length: 3 }, (_, i) => i < game.lives ? "@" : "·").join(
       " "
@@ -1835,8 +1856,12 @@
     } else accumulator = 0;
     requestAnimationFrame(frame);
   }
-  new ResizeObserver(() => renderer.resize()).observe($("stage"));
-  document.fonts.ready.then(() => renderer.resize());
+  new ResizeObserver(() => renderer.resize()).observe(stage);
+  window.addEventListener("resize", fitStage);
+  document.fonts.ready.then(() => {
+    fitStage();
+    renderer.resize();
+  });
   updateSettings();
   sync();
   requestAnimationFrame(frame);

@@ -1,0 +1,105 @@
+{
+  "seed": "POND-1985",
+  "method": "Production bundle, test-response instrumentation only exposes a reference. Read-only bot dispatches keyboard events. Playwright virtual clock accelerates requestAnimationFrame; no game-state mutations, no direct update calls, no invincibility or warping.",
+  "stages": [
+    {
+      "index": 0,
+      "score": 955,
+      "lives": 3,
+      "stageTime": 30.38333333333289
+    },
+    {
+      "index": 1,
+      "score": 2890,
+      "lives": 3,
+      "stageTime": 36.483333333332546
+    },
+    {
+      "index": 2,
+      "score": 3890,
+      "lives": 3,
+      "stageTime": 31.89999999999947
+    },
+    {
+      "index": 3,
+      "score": 5850,
+      "lives": 3,
+      "stageTime": 37.149999999999174
+    },
+    {
+      "index": 4,
+      "score": 6870,
+      "lives": 3,
+      "stageTime": 33.63333333333271
+    },
+    {
+      "index": 5,
+      "score": 8890,
+      "lives": 3,
+      "stageTime": 39.716666666665695
+    },
+    {
+      "index": 6,
+      "score": 9880,
+      "lives": 3,
+      "stageTime": 35.36666666666594
+    }
+  ],
+  "errors": [],
+  "result": {
+    "mode": "victory",
+    "index": 7,
+    "x": 10758,
+    "y": 450,
+    "lives": 3,
+    "score": 11955,
+    "elapsed": 287.30000000006737,
+    "boss": 0,
+    "stages": [
+      {
+        "index": 0,
+        "score": 955,
+        "lives": 3,
+        "stageTime": 30.38333333333289
+      },
+      {
+        "index": 1,
+        "score": 2890,
+        "lives": 3,
+        "stageTime": 36.483333333332546
+      },
+      {
+        "index": 2,
+        "score": 3890,
+        "lives": 3,
+        "stageTime": 31.89999999999947
+      },
+      {
+        "index": 3,
+        "score": 5850,
+        "lives": 3,
+        "stageTime": 37.149999999999174
+      },
+      {
+        "index": 4,
+        "score": 6870,
+        "lives": 3,
+        "stageTime": 33.63333333333271
+      },
+      {
+        "index": 5,
+        "score": 8890,
+        "lives": 3,
+        "stageTime": 39.716666666665695
+      },
+      {
+        "index": 6,
+        "score": 9880,
+        "lives": 3,
+        "stageTime": 35.36666666666594
+      }
+    ]
+  },
+  "status": "passed",
+  "replay": "passed"
+}

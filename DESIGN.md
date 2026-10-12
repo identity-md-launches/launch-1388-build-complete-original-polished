@@ -34,7 +34,7 @@ World palettes are defined by `WORLDS` in `web/src/engine.ts`, consumed by the r
 | Sky Pads | `#172330` | `#2e4257` / `#61758b` | `#a5d2d1` | `#f0c9e8` |
 | Bog Castle | `#26191e` | `#462833` / `#77424c` | `#d29085` | `#ffad9f` |
 
-Measured DOM contrast pairs: body text/page **14.80:1**, muted HUD/surface **7.17:1**, primary text/mint fill **14.21:1**, secondary button text/surface **13.20:1**. Measurements come from browser-computed colors in `artifacts/browser-results.json`. These numbers do not certify every translucent effect or canvas pixel. There is one intentional dark theme; no alternate light palette.
+Measured DOM contrast pairs: body text/page **14.80:1**, muted HUD/surface **7.17:1**, primary text/mint fill **14.21:1**, secondary button text/surface **13.20:1**. Measurements come from browser-computed colors in `evidence/browser-results.json`. These numbers do not certify every translucent effect or canvas pixel. There is one intentional dark theme; no alternate light palette.
 
 ## Typography
 
@@ -50,13 +50,15 @@ Body line-height is 1.5; descriptive copy uses 1.65–1.7. Headings use 1.1; the
 
 Desktop composition: 104px header, compact HUD, 568px game stage, four-world route, keyboard guide and restrained footer. The title copy aligns 48px inside the cabinet while the frog diorama occupies the right side. `title-actions` is a horizontal primary/secondary pair; it can wrap.
 
-At 1100px secondary header copy and some ornament drop away. At 800px the header becomes 80px, the stage 536px and HUD groups can wrap. At 600px the HUD becomes a three-column, two-row grid: Score/Lives/World above a seed spanning two columns and the settings controls. The title stage is 540px with a 33.75rem minimum. The route becomes two columns. The main action remains inside the first 390×844 viewport.
+At 1100px secondary header copy and some ornament drop away. At 800px the header becomes 80px, the stage 536px and HUD groups can wrap. At 600px (and at least 541px high) the HUD becomes a four-column, two-row grid: Score, Lives, World and Time in the first row, then a seed spanning two columns and the right-aligned settings controls. The Time countdown is never hidden: it removes a life at zero, so it stays visible at every width and turns red under 30 seconds. The title stage is 540px with a 33.75rem minimum. The route becomes two columns. The main action remains inside the first 390×844 viewport.
 
-During mobile play the decorative route/footer disappear; the stage uses available viewport height (220–560px) and touch controls sit below it. A rotate hint recommends landscape without blocking portrait play. Touch capability is remembered on `body.touch-device` to survive browser pointer-media changes after rotation.
+During touch play the stage height is measured, not guessed: `fitStage()` in `web/src/main.ts` sets `--fit-stage` to the viewport height minus everything above the stage and the touch strip below it, clamped by CSS to 220–640px. The route and footer disappear on phones; above 600px wide (tablets) the site header also disappears during play, so HUD, scene and touch controls share one viewport in both orientations (checked at 320×568, 390×844, 768×1024 and 1024×768). A rotate hint recommends landscape without blocking portrait play. Touch capability is remembered on `body.touch-device` to survive browser pointer-media changes after rotation.
 
 In landscape below 540px high, header/footer/help chrome disappear. The HUD occupies 58px. Touch controls have their own 70px strip, and the canvas takes the remaining height. A shallow canvas uses a 384-unit vertical view, cropped toward the terrain, instead of shrinking the entire 576-unit scene. The game camera and collision coordinates remain unchanged. Controls stay outside the action area and respect the visible viewport.
 
-Browser inspection covered 320, 390, 768, 1280 and 1440px widths, 320×568 short portrait, 844×390 touch landscape, and 200% root text enlargement. Native browser zoom, RTL and translated strings were not tested; the shipped interface is English.
+Result panels (pause, level clear, game over, victory) center in the stage and scroll inside `.center-content` when taller than it. Their primary action receives focus and is scrolled into view with `block: "nearest"`. On portrait viewports up to 700px high the panels drop their decorative art, use the subtitle size for the heading and tighten spacing so the outcome and its action fit together.
+
+Browser inspection covered 320, 390, 768, 1280 and 1440px widths, 320×568 short portrait, 768×1024 and 1024×768 touch tablets, 844×390 touch landscape, and 200% root text enlargement. Native browser zoom, RTL and translated strings were not tested; the shipped interface is English.
 
 ## Elevation & Depth
 

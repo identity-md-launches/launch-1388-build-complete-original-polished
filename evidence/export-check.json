@@ -1,0 +1,57 @@
+{
+  "status": "passed",
+  "manifest": "pepe-browser-game/1 fields validated against the published integration contract",
+  "exportBytes": 194360,
+  "bundleBytes": 1968507,
+  "bundleLimit": 8388608,
+  "exportFiles": [
+    {
+      "path": "dist/assets/index-DtsDjWy0.js",
+      "bytes": 62707,
+      "sha256": "589e8de67db4bce4dd816ed627abbbe8fde466d0fa543ea1fa1af2604dfa08ad"
+    },
+    {
+      "path": "dist/assets/style-DFXsNtAb.css",
+      "bytes": 80122,
+      "sha256": "2b57abf78f93a1a10a6920bd5fc4b34475899c55b5321d0292852f15d3bc6b9f"
+    },
+    {
+      "path": "dist/cover.svg",
+      "bytes": 25453,
+      "sha256": "0df57a2a090fe54f5480727458424eef3a699b5a1165b405a7e8c14725ad3d94"
+    },
+    {
+      "path": "dist/credits.txt",
+      "bytes": 381,
+      "sha256": "ca218b2d8c9324de69e26de4ac028e9f2b20f643b492858c9a7c238c918d88cd"
+    },
+    {
+      "path": "dist/favicon.svg",
+      "bytes": 241,
+      "sha256": "2b468924eea5c54c8066ae7b4621dc0d1c6656d2a356f55512d2aa046d6df457"
+    },
+    {
+      "path": "dist/index.html",
+      "bytes": 15237,
+      "sha256": "f524fe70058b9ab5dd8fb5c63b0a9757ba23f6fa1999ca30fb30a2f8ce37c2ce"
+    },
+    {
+      "path": "dist/licenses/Silkscreen-OFL.txt",
+      "bytes": 4503,
+      "sha256": "5e647e94c4b72dc6c92dabfabb3c32225fbeff0f5f9e38db93c118b5bcb85d0c"
+    },
+    {
+      "path": "dist/licenses/Space-Mono-OFL.txt",
+      "bytes": 4726,
+      "sha256": "761663b7fb7667764f42243f9b1b2bcfccf41b158a7ab508bed4961dcf377eab"
+    },
+    {
+      "path": "dist/pepe-game.json",
+      "bytes": 990,
+      "sha256": "f913423f0b30077b33b977ea9819b465526774de9c9284a5c78e76df0bfb1359"
+    }
+  ],
+  "includedFiles": 74,
+  "missingRoots": [],
+  "note": "Counts delivery directories (web, dist, tests, scripts, evidence, licenses) and documentation. .imd inputs and test/scratch are removed by the worker. No Git metadata was read or changed. No ignore file was changed. All npm installations occurred outside the repository."
+}

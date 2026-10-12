@@ -53,6 +53,9 @@ function clearInput() {
     .forEach((b) => b.classList.remove("held"));
 }
 function pause() {
+  // A deliberate pause (button, key or arcade host) outranks a dialog that
+  // was opened earlier: closing that dialog must not resume play.
+  resumeAfterDialog = false;
   clearInput();
   game.pause();
   sync();
@@ -335,6 +338,25 @@ function readInput(): Input {
   downPressed = false;
   return input;
 }
+const stage = $("stage");
+const touchControls = document.querySelector<HTMLElement>(".touch-controls")!;
+let fitted = "";
+// Touch play fits HUD, scene and touch strip into the viewport without
+// scrolling: the stage takes the viewport height minus everything above it
+// and the measured touch strip below it. CSS decides when to use the value.
+function fitStage() {
+  const body = document.body.classList;
+  let value = "";
+  if (body.contains("in-run") && body.contains("touch-device")) {
+    const top = stage.getBoundingClientRect().top + scrollY;
+    const strip = touchControls.getBoundingClientRect().height;
+    value = `${Math.floor(innerHeight - top - strip - 1)}px`;
+  }
+  if (value === fitted) return;
+  fitted = value;
+  if (value) stage.style.setProperty("--fit-stage", value);
+  else stage.style.removeProperty("--fit-stage");
+}
 function resultStats() {
   return `<div class="result-stats"><p><strong>${game.score.toLocaleString()}</strong>Score</p><p><strong>${game.totalFlies}</strong>Flies</p><p><strong>${Math.floor(game.elapsed / 60)}:${Math.floor(
     game.elapsed % 60,
@@ -367,11 +389,14 @@ function sync() {
     if (mode === "victory")
       panel.innerHTML = `<div class="center-content"><pre class="result-art" aria-hidden="true">  \\ | /\n --\\*/--\n   /|\\\n    |\n ~~(@)~~</pre><h2>The Lily is home.</h2><p class="subtitle">Eight levels. Four guardians. One very brave frog.</p>${resultStats()}<p class="subtitle">Seed ${game.seed} · Best ${best.toLocaleString()}</p><div class="center-actions"><button type="button" class="primary" data-action="new">A new odyssey →</button><button type="button" data-action="retry">Replay this seed</button></div><button type="button" class="subtle-action" data-action="title">Back to title</button></div>`;
     renderer.resize();
-    if (["paused", "clear", "gameover", "victory"].includes(mode))
-      panel
-        .querySelector<HTMLButtonElement>(".primary")
-        ?.focus({ preventScroll: true });
+    if (["paused", "clear", "gameover", "victory"].includes(mode)) {
+      const primary = panel.querySelector<HTMLButtonElement>(".primary");
+      primary?.focus({ preventScroll: true });
+      // Short stages overflow the result panel; keep the focused action visible.
+      primary?.scrollIntoView({ block: "nearest" });
+    }
   }
+  fitStage();
   $("score").textContent = (title ? 0 : game.score).toString().padStart(6, "0");
   $("lives").textContent = title
     ? "@ @ @"
@@ -466,8 +491,12 @@ function frame(now: number) {
   } else accumulator = 0;
   requestAnimationFrame(frame);
 }
-new ResizeObserver(() => renderer.resize()).observe($("stage"));
-document.fonts.ready.then(() => renderer.resize());
+new ResizeObserver(() => renderer.resize()).observe(stage);
+window.addEventListener("resize", fitStage);
+document.fonts.ready.then(() => {
+  fitStage();
+  renderer.resize();
+});
 updateSettings();
 sync();
 requestAnimationFrame(frame);

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { preview, chromium } from "./browser-lib.mjs";
 process.chdir(fileURLToPath(new URL("..", import.meta.url)));
+await mkdir("evidence", { recursive: true });
 const host = await preview(),
   browser = await chromium.launch({ args: ["--no-sandbox"] });
 const report = {
@@ -58,8 +59,8 @@ try {
   await page.keyboard.press("ArrowDown");
   await page.clock.runFor(100);
   assert.equal(await page.evaluate(() => __qaGame.level.bonus), true);
-  await page.screenshot({ path: "artifacts/bonus-cave.png", fullPage: true });
-  report.screenshots.push("artifacts/bonus-cave.png");
+  await page.screenshot({ path: "evidence/bonus-cave.png", fullPage: true });
+  report.screenshots.push("evidence/bonus-cave.png");
   await page.keyboard.down("ArrowRight");
   await page.keyboard.down("Shift");
   await page.keyboard.down("Space");
@@ -85,10 +86,10 @@ try {
     }, index);
     await page.clock.runFor(650);
     await page.screenshot({
-      path: `artifacts/boss-${(index + 1) / 2}.png`,
+      path: `evidence/boss-${(index + 1) / 2}.png`,
       fullPage: true,
     });
-    report.screenshots.push(`artifacts/boss-${(index + 1) / 2}.png`);
+    report.screenshots.push(`evidence/boss-${(index + 1) / 2}.png`);
   }
   report.checks.push(
     "All four guardian portraits rendered at their real arenas.",
@@ -121,7 +122,7 @@ try {
   process.exitCode = 1;
 } finally {
   await writeFile(
-    "artifacts/mechanics-results.json",
+    "evidence/mechanics-results.json",
     JSON.stringify(report, null, 2) + "\n",
   );
   console.log(JSON.stringify(report, null, 2));

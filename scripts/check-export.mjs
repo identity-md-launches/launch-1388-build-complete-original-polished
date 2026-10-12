@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
@@ -89,11 +89,22 @@ assert.match(cover, /width="1200" height="630"/);
 assert.ok(!/href="https?:/.test(cover));
 let bundleBytes = 0;
 const included = [];
-for (const root of ["web", "dist", "tests", "scripts", "artifacts", "licenses"])
-  for (const path of await files(root)) {
+const missingRoots = [];
+for (const root of ["web", "dist", "tests", "scripts", "evidence", "licenses"]) {
+  let list;
+  try {
+    list = await files(root);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    missingRoots.push(root);
+    continue;
+  }
+  for (const path of list) {
     bundleBytes += (await stat(path)).size;
     included.push(path);
   }
+}
+await mkdir("evidence", { recursive: true });
 for (const path of ["README.md", "DESIGN.md", "ASSETS.md"]) {
   try {
     bundleBytes += (await stat(path)).size;
@@ -110,10 +121,11 @@ const report = {
   bundleLimit: 8388608,
   exportFiles,
   includedFiles: included.length,
-  note: "Counts delivery directories and documentation. .imd inputs and test/scratch are removed by the worker. No Git metadata was read or changed. No ignore file was changed. All npm installations occurred outside the repository.",
+  missingRoots,
+  note: "Counts delivery directories (web, dist, tests, scripts, evidence, licenses) and documentation. .imd inputs and test/scratch are removed by the worker. No Git metadata was read or changed. No ignore file was changed. All npm installations occurred outside the repository.",
 };
 await writeFile(
-  "artifacts/export-check.json",
+  "evidence/export-check.json",
   JSON.stringify(report, null, 2) + "\n",
 );
 console.log(JSON.stringify(report, null, 2));

@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { preview, chromium, requireTools } from "./browser-lib.mjs";
 process.chdir(resolve(fileURLToPath(new URL("..", import.meta.url))));
 const AxeBuilder = requireTools("@axe-core/playwright").default;
-await mkdir("artifacts", { recursive: true });
+await mkdir("evidence", { recursive: true });
 const host = await preview();
 const browser = await chromium.launch({
   headless: true,
@@ -39,8 +39,8 @@ function observe(page) {
   });
 }
 async function shot(page, name) {
-  await page.screenshot({ path: `artifacts/${name}.png`, fullPage: true });
-  report.screenshots.push(`artifacts/${name}.png`);
+  await page.screenshot({ path: `evidence/${name}.png`, fullPage: true });
+  report.screenshots.push(`evidence/${name}.png`);
 }
 async function instrument(page) {
   await page.route("**/assets/index-*.js", async (route) => {
@@ -426,7 +426,117 @@ try {
     "Touch and landscape",
     "New run, simultaneous direction+jump, pointer cancellation, pause/resume; 390×844, 320×568 and 844×390.",
   );
+  // Short portrait: the Time countdown stays in the HUD and the result panel's
+  // focused primary action is visible inside the stage without page scrolling.
+  await touch.setViewportSize({ width: 320, height: 568 });
+  await touch.waitForTimeout(200);
+  assert.ok(
+    await touch
+      .locator(".time-stat")
+      .evaluate((e) => getComputedStyle(e).display !== "none"),
+    "Time stat hidden in portrait",
+  );
+  for (let i = 0; i < 3; i++) {
+    await touch.evaluate(() => {
+      __qaGame.player.y = 650;
+    });
+    await touch.waitForTimeout(1300);
+  }
+  assert.equal((await state(touch)).mode, "gameover");
+  const shortPanel = await touch
+    .locator("[data-action=retry]")
+    .evaluate((e) => {
+      const r = e.getBoundingClientRect(),
+        s = document.getElementById("stage").getBoundingClientRect();
+      return {
+        top: r.top,
+        bottom: r.bottom,
+        stageTop: s.top,
+        stageBottom: s.bottom,
+        viewport: innerHeight,
+        focused: document.activeElement === e,
+      };
+    });
+  assert.ok(
+    shortPanel.focused &&
+      shortPanel.top >= shortPanel.stageTop &&
+      shortPanel.bottom <= shortPanel.stageBottom &&
+      shortPanel.bottom <= shortPanel.viewport,
+    JSON.stringify(shortPanel),
+  );
+  await shot(touch, "game-over-short-phone");
+  await touch.locator("[data-action=retry]").tap();
+  await touch.waitForTimeout(100);
+  await touch.keyboard.press("p");
+  await touch.waitForTimeout(100);
+  assert.ok(
+    await touch.locator("[data-action=resume]").evaluate((e) => {
+      const r = e.getBoundingClientRect(),
+        s = document.getElementById("stage").getBoundingClientRect();
+      return r.bottom <= s.bottom && r.bottom <= innerHeight;
+    }),
+  );
+  ok(
+    "Short portrait HUD and result panels",
+    "320×568: Time stat visible; game-over replay and pause Resume are focused and fully inside the stage and viewport.",
+  );
   await mobile.close();
+  // Tablet landscape touch: HUD, scene and touch strip fit one viewport.
+  const tablet = await browser.newContext({
+    viewport: { width: 1024, height: 768 },
+    hasTouch: true,
+    isMobile: true,
+  });
+  const pad = await tablet.newPage();
+  observe(pad);
+  await pad.goto(host.url + "/arcade/odyssey/");
+  await pad.locator("[data-action=new]").tap();
+  await pad.waitForTimeout(300);
+  const padLayout = await pad.evaluate(() => {
+    const r = (s) => document.querySelector(s).getBoundingClientRect();
+    return {
+      hudTop: r(".hud").top,
+      stageHeight: r("#stage").height,
+      jumpBottom: r(".jump-button").bottom,
+      leftBottom: r("[data-control=left]").bottom,
+      fireBottom: r("#fire-button").bottom,
+      viewport: innerHeight,
+      scrollY,
+      headerHidden:
+        getComputedStyle(document.querySelector(".site-header")).display ===
+        "none",
+    };
+  });
+  assert.ok(
+    padLayout.hudTop >= 0 &&
+      padLayout.scrollY === 0 &&
+      padLayout.headerHidden &&
+      padLayout.stageHeight >= 220 &&
+      padLayout.jumpBottom <= padLayout.viewport &&
+      padLayout.leftBottom <= padLayout.viewport &&
+      padLayout.fireBottom <= padLayout.viewport,
+    JSON.stringify(padLayout),
+  );
+  await shot(pad, "game-tablet-landscape");
+  await pad.locator("#pause").tap();
+  await pad.waitForTimeout(100);
+  assert.ok(
+    await pad
+      .locator("[data-action=resume]")
+      .evaluate((e) => e.getBoundingClientRect().bottom <= innerHeight),
+  );
+  await pad.setViewportSize({ width: 768, height: 1024 });
+  await pad.waitForTimeout(300);
+  assert.ok(
+    await pad
+      .locator(".jump-button")
+      .evaluate((e) => e.getBoundingClientRect().bottom <= innerHeight),
+  );
+  ok("Tablet touch layouts", {
+    landscape: padLayout,
+    portrait: "768×1024 touch strip inside the viewport while paused",
+  });
+  await tablet.close();
   // Exact arcade sandbox, deliberately without an Access-Control-Allow-Origin response header.
   const embed = await browser.newPage({
     viewport: { width: 1280, height: 900 },
@@ -500,6 +610,37 @@ try {
   );
   await embed.waitForTimeout(50);
   assert.equal((await state(frame)).mode, "playing");
+  // A host pause sent while the help dialog is open outranks the dialog:
+  // closing the dialog must not resume play until the host says so.
+  await frame.locator("#help").click();
+  await embed.waitForTimeout(100);
+  assert.equal((await state(frame)).mode, "paused");
+  await embed.evaluate(() =>
+    document
+      .querySelector("iframe")
+      .contentWindow.postMessage(
+        { protocol: "pepe-game/1", type: "pause", channel: "test-channel" },
+        "*",
+      ),
+  );
+  await embed.waitForTimeout(50);
+  await frame.locator("#help-dialog [data-close]").first().click();
+  await embed.waitForTimeout(300);
+  assert.equal((await state(frame)).mode, "paused", "dialog close resumed");
+  await embed.evaluate(() =>
+    document
+      .querySelector("iframe")
+      .contentWindow.postMessage(
+        { protocol: "pepe-game/1", type: "resume", channel: "test-channel" },
+        "*",
+      ),
+  );
+  await embed.waitForTimeout(50);
+  assert.equal((await state(frame)).mode, "playing");
+  ok(
+    "Host pause outranks dialog",
+    "Help opened during play, host pause accepted, help closed: still paused until the host resume.",
+  );
   await frame.evaluate(() => {
     __qaGame.score = 1234;
     __qaGame.lives = 1;
@@ -545,7 +686,7 @@ try {
   process.exitCode = 1;
 } finally {
   await writeFile(
-    "artifacts/browser-results.json",
+    "evidence/browser-results.json",
     JSON.stringify(report, null, 2) + "\n",
   );
   await browser.close();

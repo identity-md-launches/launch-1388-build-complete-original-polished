@@ -796,9 +796,6 @@ dd {
   .seed-stat {
     min-width: unset;
   }
-  .time-stat {
-    display: none;
-  }
   .route-link {
     display: none;
   }
@@ -1227,13 +1224,17 @@ dd {
 }
 
 @media (max-width: 600px) and (min-height: 541px) {
+  /* Score, Lives, World and the lethal Time countdown share the first row. */
   .hud {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px 10px;
   }
-  .world-stat {
+  .world-stat,
+  .time-stat {
     margin: 0;
+  }
+  .time-stat {
     text-align: end;
   }
   .seed-stat {
@@ -1243,8 +1244,9 @@ dd {
     min-width: 0;
   }
   .hud-actions {
-    grid-column: 3;
+    grid-column: 3/5;
     grid-row: 2;
+    justify-self: end;
   }
   .seed-stat button {
     max-width: 100%;
@@ -1303,5 +1305,47 @@ dd {
 @media (max-height: 540px) and (orientation: landscape) {
   .in-run.touch-device .stage {
     height: calc(100dvh - 128px);
+  }
+}
+/* Touch play outside the short-landscape mode (portrait phones, tablets in
+   either orientation): the HUD, scene and touch strip share one viewport.
+   --fit-stage is measured by main.ts from the viewport minus the HUD above
+   and the touch strip below the stage. */
+@media (min-height: 541px), (orientation: portrait) {
+  .in-run.touch-device .stage {
+    height: var(--fit-stage, calc(100svh - 298px));
+    min-height: 220px;
+    max-height: 640px;
+  }
+}
+@media (min-width: 601px) and (min-height: 541px),
+  (min-width: 601px) and (orientation: portrait) {
+  .in-run.touch-device .site-header,
+  .in-run.touch-device .world-route,
+  .in-run.touch-device .site-footer {
+    display: none;
+  }
+}
+/* Short portrait stages: drop the result art and tighten the result panels
+   so the outcome and its primary action fit together. */
+@media (max-height: 700px) and (orientation: portrait) {
+  .in-run .center-content {
+    padding: 14px;
+  }
+  .in-run .center-content .result-art {
+    display: none;
+  }
+  .in-run .center-content h2 {
+    font-size: var(--subtitle);
+    margin-bottom: 10px;
+  }
+  .in-run .center-actions {
+    margin-top: 14px;
+  }
+  .in-run .result-stats {
+    margin-block: 12px;
+  }
+  .in-run .subtle-action {
+    margin-top: 8px;
   }
 }

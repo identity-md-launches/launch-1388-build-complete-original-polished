@@ -1,0 +1,179 @@
+{
+  "browser": "145.0.7632.6",
+  "date": "2026-10-12T10:18:05.067Z",
+  "checks": [
+    {
+      "name": "Keyboard focus",
+      "status": "passed",
+      "detail": "Visible 3px focus ring and logical Tab order."
+    },
+    {
+      "name": "Unmodified export keyboard loop",
+      "status": "passed",
+      "detail": "Seed validation, case normalization, movement, jump, P pause, resume, mute and CRT persistence."
+    },
+    {
+      "name": "Accessible dialogs",
+      "status": "passed",
+      "detail": "Native focus trap, Escape close and focus return. Axe title/help scans have no WCAG A/AA violations."
+    },
+    {
+      "name": "Rendered contrast",
+      "status": "passed",
+      "detail": "Body 14.80:1, Muted HUD 7.17:1, Primary action 14.21:1, Button 13.20:1"
+    },
+    {
+      "name": "Responsive title",
+      "status": "passed",
+      "detail": "320, 390, 768 and 1440 widths; no horizontal overflow; primary action inside first viewport."
+    },
+    {
+      "name": "Text enlargement",
+      "status": "passed",
+      "detail": "200% root text size reflows at 1280px; distinct from native browser zoom."
+    },
+    {
+      "name": "Audio gesture",
+      "status": "passed",
+      "detail": "No AudioContext before a gesture; context runs after Play this seed."
+    },
+    {
+      "name": "Pause freeze and restart",
+      "status": "passed",
+      "detail": "Physics/timer freeze exactly; confirmed restart restores three lives, stage one, same seed."
+    },
+    {
+      "name": "Game over and instant replay",
+      "status": "passed",
+      "detail": "Three water-death fixtures render the real game-over menu; one-click same-seed replay."
+    },
+    {
+      "name": "Fire control",
+      "status": "passed",
+      "detail": "J emits a real fireball with Fire Fly."
+    },
+    {
+      "name": "Reduced motion",
+      "status": "passed",
+      "detail": "Renderer honors media changes; no shake, twinkle, parallax or decorative blink."
+    },
+    {
+      "name": "Touch and landscape",
+      "status": "passed",
+      "detail": "New run, simultaneous direction+jump, pointer cancellation, pause/resume; 390×844, 320×568 and 844×390."
+    },
+    {
+      "name": "Short portrait HUD and result panels",
+      "status": "passed",
+      "detail": "320×568: Time stat visible; game-over replay and pause Resume are focused and fully inside the stage and viewport."
+    },
+    {
+      "name": "Tablet touch layouts",
+      "status": "passed",
+      "detail": {
+        "landscape": {
+          "hudTop": 1,
+          "stageHeight": 602,
+          "jumpBottom": 755,
+          "leftBottom": 755,
+          "fireBottom": 755,
+          "viewport": 768,
+          "scrollY": 0,
+          "headerHidden": true
+        },
+        "portrait": "768×1024 touch strip inside the viewport while paused"
+      }
+    },
+    {
+      "name": "Host pause outranks dialog",
+      "status": "passed",
+      "detail": "Help opened during play, host pause accepted, help closed: still paused until the host resume."
+    },
+    {
+      "name": "Opaque-origin bridge",
+      "status": "passed",
+      "detail": {
+        "storageDenied": true,
+        "corsHeaders": false,
+        "wrongSourceRejected": true,
+        "wrongChannelRejected": true,
+        "messages": [
+          {
+            "protocol": "pepe-game/1",
+            "type": "ready",
+            "channel": "test-channel"
+          },
+          {
+            "protocol": "pepe-game/1",
+            "type": "score",
+            "channel": "test-channel",
+            "score": 1234
+          }
+        ]
+      }
+    },
+    {
+      "name": "Manifest and cover",
+      "status": "passed",
+      "detail": "Relative entry and 1200×630 original SVG cover are present."
+    }
+  ],
+  "screenshots": [
+    "evidence/title-desktop.png",
+    "evidence/game-desktop.png",
+    "evidence/pause-desktop.png",
+    "evidence/title-320.png",
+    "evidence/title-mobile.png",
+    "evidence/text-200-percent.png",
+    "evidence/game-over.png",
+    "evidence/game-mobile.png",
+    "evidence/game-short-phone.png",
+    "evidence/game-landscape.png",
+    "evidence/game-over-short-phone.png",
+    "evidence/game-tablet-landscape.png",
+    "evidence/sandbox-bridge.png"
+  ],
+  "errors": [],
+  "contrast": [
+    {
+      "label": "Body",
+      "foreground": "rgb(228, 234, 219)",
+      "background": "rgb(16, 23, 20)",
+      "ratio": 14.801196602420376
+    },
+    {
+      "label": "Muted HUD",
+      "foreground": "rgb(160, 177, 159)",
+      "background": "rgb(23, 35, 29)",
+      "ratio": 7.171569165608296
+    },
+    {
+      "label": "Primary action",
+      "foreground": "rgb(16, 23, 20)",
+      "background": "rgb(182, 243, 173)",
+      "ratio": 14.213906865636545
+    },
+    {
+      "label": "Button",
+      "foreground": "rgb(228, 234, 219)",
+      "background": "rgb(23, 35, 29)",
+      "ratio": 13.201762810432058
+    }
+  ],
+  "accessibility": [
+    {
+      "state": "title",
+      "violations": []
+    },
+    {
+      "state": "help",
+      "violations": []
+    }
+  ],
+  "limitations": [
+    "Chromium automation, not a physical phone or screen-reader session.",
+    "State fixtures exercise game-over, power-ups and bridge score; the campaign test uses only keyboard events.",
+    "Audio context and scheduling checked; audible mix has not been independently listened to."
+  ],
+  "status": "passed"
+}
